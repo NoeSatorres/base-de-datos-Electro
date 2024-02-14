@@ -101,6 +101,15 @@ def modificar_electrodomestico():
     return jsonify({'mensaje': 'Parámetro "modelo" no proporcionado'}), 400
 
 #ELIMINAR
+@app.route('/electrodomesticos/<modelo>', methods=['DELETE'])
+def eliminar_electrodomestico(modelo):
+    electrodomestico = Electro.query.filter_by(modelo=modelo).first()
+    if electrodomestico:
+        db.session.delete(electrodomestico)
+        db.session.commit()
+        return jsonify({'message': 'Se elimino un electrodomestico'}),200
+    return jsonify({'message': 'Electrodomestico no encontrado'}),404
+
 
 
 
