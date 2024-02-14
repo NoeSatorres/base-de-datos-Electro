@@ -56,6 +56,54 @@ def buscar_electrodomestico():
                               'cantidad': electrodomestico.cantidad, 'precio': electrodomestico.precio}]
             return jsonify (electrodomesticos_json), 200
         return jsonify ({'message': 'Electrodomestico no encontrado'}),404
+    
+#MODIFICAR
+""" @app.route('/electrodomesticos', methods=['PUT'])
+def modificar_electrodomestico():
+    data = request.get_json('modelo')
+    if modelo:
+        electrodomestico.nombre = data.get('nombre', electrodomestico.nombre)
+        electrodomestico.modelo = data.get('modelo', electrodomestico.modelo) """
+# ... (código anterior)
+
+# MODIFICAR
+@app.route('/electrodomesticos', methods=['GET', 'PUT'])
+def modificar_electrodomestico():
+    data = request.get_json()
+    modelo = data.get('modelo')
+
+    if modelo:
+        electrodomestico = Electro.query.filter_by(modelo=modelo).first()
+
+        if electrodomestico:
+            # Actualiza los valores solo si se proporcionan en la solicitud
+            electrodomestico.nombre = data.get('nombre', electrodomestico.nombre)
+            electrodomestico.modelo = data.get('modelo', electrodomestico.modelo)
+            electrodomestico.cantidad = data.get('cantidad', electrodomestico.cantidad)
+            electrodomestico.precio = data.get('precio', electrodomestico.precio)
+
+            db.session.commit()
+
+            electrodomesticos_json = {
+                'mensaje': 'Electrodomestico modificado exitosamente',
+                'datos': {
+                    'nombre': electrodomestico.nombre,
+                    'modelo': electrodomestico.modelo,
+                    'cantidad': electrodomestico.cantidad,
+                    'precio': electrodomestico.precio
+                }
+            }
+
+            return jsonify(electrodomesticos_json), 200
+
+        return jsonify({'mensaje': 'Electrodomestico no encontrado'}), 404
+
+    return jsonify({'mensaje': 'Parámetro "modelo" no proporcionado'}), 400
+
+#ELIMINAR
+
+
+
             
 
 
